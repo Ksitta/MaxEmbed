@@ -1,0 +1,10 @@
+.cache
+build
+*.txt
+*.tmp
+processed_data
+*.o
+!CMakeLists.txt
+*.pyc
+log
+output

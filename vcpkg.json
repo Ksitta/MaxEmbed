@@ -1,0 +1,9 @@
+{
+  "dependencies": [
+    "argparse",
+    "cachelib",
+    "folly",
+    "tbb",
+    "atomic-queue"
+  ]
+}
