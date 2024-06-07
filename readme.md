@@ -2,6 +2,36 @@
 
 This is the source code of the paper "MaxEmbed: Maximizing SSD bandwidth utilization for huge embedding models serving".
 
+## For AE reviewers
+
+You can use the `run_all.sh` script located in the `ae_scripts` folder to execute the evaluation procedure. This script will perform the online procedure of MaxEmbed and generate the figures presented in the paper.
+
+The `run_all.sh` script accepts two single parameters, the first one specifying the log folder, which is used to save the log files, and the second one specifying which experiment to run. 
+
+For the first parameter:
+- If you specify an existing directory, the script will use the log files in that directory to draw figures.
+- If you specify a non-existing directory, the script will run the experiments, save the log files in the specified directory, and then use those logs to draw figures.
+
+Figures will be saved in the `<log_dir>/figures` folder.
+
+The second parameter can be one of the following:
+- 1 - Run performance.sh and main_evaluation.sh
+- 2 - Run performance.sh and different_algorithm.sh
+- 3 - Run performance.sh and cdf.sh
+- 4 - Run performance.sh and no_cache.sh
+If you do not specify the second parameter, the script will run all the experiments.
+
+for example:
+```
+bash
+cd ae_scripts
+bash ./run_all.sh log 1
+# This will run exp 1 and draw figure 8, 10, 11, 12. 
+# figures will be saved in the log/figures folder.
+```
+
+We have provided a log in the `ae_scripts/log` folder, which you can use to draw the figures.
+
 ## How to Build
 
 Install the dependencies:
@@ -21,25 +51,6 @@ make -j
 
 ## How to Use
 
-### For AE
-
-Use the `run_all.sh` script located in the `ae_scripts` folder to execute the evaluation procedure. This script will perform the online procedure of MaxEmbed and generate the figures presented in the paper.
-
-The `run_all.sh` script accepts a single parameter specifying the log folder.
-
-- If you specify an existing directory, the script will use the log files in that directory to draw figures.
-- If you specify a non-existing directory, the script will run the experiments, save the log files in the specified directory, and then use those logs to draw figures.
-
-```
-bash
-cd ae_scripts
-bash ./run_all.sh log
-# bash ./run_all.sh your_dir # run this to generate log files and draw figures
-```
-
-Figures will be saved in the `<log_dir>/figures` folder.
-
-We have provided a log in the `ae_scripts/log` folder, which you can use to draw the figures.
 
 ### Step 1: Partition Procedure
 
