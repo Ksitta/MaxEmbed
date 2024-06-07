@@ -8,6 +8,7 @@
 #include <unordered_set>
 #include "timer.h"
 #include <folly/container/F14Set.h>
+#include <atomic>
 
 template <typename K>
 using FastSet = folly::F14FastSet<K, std::hash<K>, std::equal_to<K>,
@@ -99,7 +100,7 @@ void Mapping::cache_write() {
       }
       std::memcpy(handle->getMemory(), entry->value, _value_size);
       cache->insert(handle);
-      cache_write_cnt.fetch_add(1, std::memory_order_release);
+      cache_write_cnt.fetch_add(1);
       write_queue_free.push(entry);
     }
   }
@@ -140,7 +141,7 @@ void ReadCompleteCB(void *ctx, const struct spdk_nvme_cpl *cpl) {
       data_type key = read_ctx->idx[i];
       int offset = read_ctx->offset[i];
       QueueEntry *entry;
-      cache_cnt.fetch_add(1, std::memory_order_relaxed);
+      cache_cnt.fetch_add(1);
       if(!mapping->write_queue_free.try_pop(entry)){
         break;
       }
@@ -243,7 +244,7 @@ GetResult Mapping::BatchGet(base::ConstArray<data_type> keys_array, char *result
       continue;
     }
     int i = 0;
-    const int max_visit = 5;
+    const int max_visit = 10;
     int start = block_idx[elem];
     int max = 0;
     int maxp = all_blocks[start];

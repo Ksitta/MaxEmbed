@@ -148,11 +148,9 @@ int main(int argc, char **argv) {
       }
       model_timer.End();
       timer.End();
-      global_load_cnt.fetch_add(ret.load_cnt,
-                                std::memory_order::memory_order_release);
-      global_request_cnt.fetch_add(ret.load_emb_cnt,
-                                   std::memory_order::memory_order_release);
-      global_batch_cnt.fetch_add(1, std::memory_order::memory_order_release);
+      global_load_cnt.fetch_add(ret.load_cnt);
+      global_request_cnt.fetch_add(ret.load_emb_cnt);
+      global_batch_cnt.fetch_add(1);
       std::chrono::time_point end = std::chrono::high_resolution_clock::now();
       if(std::chrono::duration_cast<std::chrono::seconds>(end - start).count() > 1){
         latency[thread_id].push_back({latency_counter[thread_id].PeriodReportSum(), latency_counter[thread_id].PeriodReportCnt()});
@@ -183,8 +181,8 @@ int main(int argc, char **argv) {
         break;
       }
     }
-    stop.store(1, std::memory_order_release);
-    finished.fetch_add(1, std::memory_order_release);
+    stop.store(1);
+    finished.fetch_add(1);
   };
   auto monitor = [&]() {
     // bind_core(num_threads + 1);
@@ -198,11 +196,11 @@ int main(int argc, char **argv) {
       sleep(1);
       timer.End();
       int64_t current_load_cnt =
-          global_load_cnt.load(std::memory_order::memory_order_acquire);
+          global_load_cnt.load();
       int64_t current_request_cnt =
-          global_request_cnt.load(std::memory_order::memory_order_acquire);
+          global_request_cnt.load();
       int64_t current_batch_cnt =
-          global_batch_cnt.load(std::memory_order::memory_order_acquire);
+          global_batch_cnt.load();
 
       int64_t delta_load = current_load_cnt - last_load_cnt;
       int64_t delta_request = current_request_cnt - last_request_cnt;
@@ -255,7 +253,7 @@ int main(int argc, char **argv) {
       last_request_cnt = current_request_cnt;
       last_batch_cnt = current_batch_cnt;
 
-      if (finished.load(std::memory_order::memory_order_acquire) == num_threads)
+      if (finished.load() == num_threads)
         break;
       if (++cnt == run_time) {
         stop = 1;

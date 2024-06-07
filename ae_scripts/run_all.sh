@@ -27,6 +27,7 @@ if [ ! -d $1 ]; then
     mkdir -p $1
     cd $1
     sudo ${spdk_path}/scripts/setup.sh
+    source ${project_path}/ae_scripts/performance.sh
     source ${project_path}/ae_scripts/main_evaluation.sh
     source ${project_path}/ae_scripts/different_algorithm.sh
     source ${project_path}/ae_scripts/cdf.sh
