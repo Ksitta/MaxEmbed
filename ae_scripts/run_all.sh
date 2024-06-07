@@ -29,6 +29,8 @@ log_path=$1
 option=$2
 
 mkdir -p $log_path
+mkdir -p ${log_path}/figures
+mkdir -p ${log_path}/merged_results
 cd $log_path
 sudo ${spdk_path}/scripts/setup.sh > /dev/null
 source ${project_path}/ae_scripts/performance.sh
