@@ -16,8 +16,8 @@ def plot_cdf(ax, numbers, title, color):
     ax.set_ylim(0, 1)
     ax.grid(True)
 
-numbers1 = read_numbers('./cdf/shp.txt')
-numbers2 = read_numbers('./cdf/me.txt')
+numbers1 = read_numbers('./exp4/shp.txt')
+numbers2 = read_numbers('./exp4/me.txt')
 
 
 # %%

@@ -1,6 +1,10 @@
 # %%
 import pandas as pd
 import matplotlib.pyplot as plt
+from merge_data import merge_result
+
+for each in ["alibaba", "avazu", "criteo", "criteoTB"]:
+    merge_result(f"./exp2/result_{each}_no_cache", f"./merged_results/result_{each}_no_cache.csv")
 
 file_paths = [
     './merged_results/result_alibaba_no_cache.csv',

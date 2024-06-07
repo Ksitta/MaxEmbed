@@ -1,7 +1,12 @@
 # %%
 import matplotlib.pyplot as plt
 import pandas as pd
-# Load the additional CSV files
+from merge_data import merge_result
+
+for each in ["alibaba_algo", "amazon_m2_algo", "avazu_algo"]:
+    merge_result(f"./exp3/result_{each}", f"./merged_results/result_{each}.csv")
+
+
 file_paths = [
     './merged_results/result_alibaba_algo.csv',
     './merged_results/result_amazon_m2_algo.csv',

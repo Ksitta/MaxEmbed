@@ -1,4 +1,4 @@
-# /bin/bash
+#!/bin/bash
 
 set -e
 
@@ -7,34 +7,81 @@ spdk_path=/home/frw/spdk
 dataset_path=/home/frw/dataset
 client_path=${project_path}/build/client/client
 
-if [ $# -ne 1 ]; then
-    echo "Usage: $0 <path_to_log>"
+if [ $# -lt 1 ] || [ $# -gt 2 ]; then
+    echo "Usage: $0 <path_to_log> [option]"
     echo ""
-    echo "If you specify an existing directory"
-    echo "we will use the log files in the directory to draw figures."
+    echo "Options:"
+    echo "1 - Run performance.sh and main_evaluation.sh"
+    echo "2 - Run performance.sh and different_algorithm.sh"
+    echo "3 - Run performance.sh and cdf.sh"
+    echo "4 - Run performance.sh and no_cache.sh"
+    echo "If the second option is not provided, all scripts will be run."
     echo ""
-    echo "If you specify a non-existing directory"
-    echo "we will run the experiments and save the log files in the directory."
+    echo "All figures will be generated in the provided log directory."
     echo ""
-    echo "We have provided a log file in the log folder."
-    echo "You can use it to draw figures."
+    echo "We have provide log files, you can use the following command to generate figures:"
+    echo "bash run_all.sh /home/frw/asplos_ae/ae_scripts/log"
+
     exit 1
 fi
 
-set -x
+log_path=$1
+option=$2
 
-if [ ! -d $1 ]; then
-    mkdir -p $1
-    cd $1
-    sudo ${spdk_path}/scripts/setup.sh
-    source ${project_path}/ae_scripts/performance.sh
-    source ${project_path}/ae_scripts/main_evaluation.sh
-    source ${project_path}/ae_scripts/different_algorithm.sh
-    source ${project_path}/ae_scripts/cdf.sh
-    source ${project_path}/ae_scripts/no_cache.sh
+mkdir -p $log_path
+cd $log_path
+sudo ${spdk_path}/scripts/setup.sh > /dev/null
+source ${project_path}/ae_scripts/performance.sh
+
+if [ -z "$option" ]; then
+    echo "Running exp1"
+    source ${project_path}/ae_scripts/exp1.sh
+    echo "Running exp2"
+    source ${project_path}/ae_scripts/exp2.sh
+    echo "Running exp3"
+    source ${project_path}/ae_scripts/exp3.sh
+    echo "Running exp4"
+    source ${project_path}/ae_scripts/exp4.sh
+    echo "Ploting Figure 8,10,11,12"
+    python ${project_path}/ae_scripts/python/figure_8-10-11-12.py
+    echo "Ploting Figure 13"
+    python ${project_path}/ae_scripts/python/figure_13.py
+    echo "Ploting Figure 14"
+    python ${project_path}/ae_scripts/python/figure_14.py
+    echo "Ploting Figure 9"
+    python ${project_path}/ae_scripts/python/figure_9.py
+    echo "done! All figures are generated in ${log_path}/figures."
 else
-    echo "Directory $1 already exists. Using exist log to draw figures."
-    cd $1
+    case $option in
+        1)
+            echo "Running exp1"
+            source ${project_path}/ae_scripts/exp1.sh
+            echo "Ploting Figure 8-10-11-12"
+            python ${project_path}/ae_scripts/python/figure_8-10-11-12.py
+            ;;
+        2)
+            echo "Running exp2"
+            source ${project_path}/ae_scripts/exp2.sh
+            echo "Ploting Figure 13"
+            python ${project_path}/ae_scripts/python/figure_13.py
+            ;;
+        3)
+            echo "Running exp3"
+            source ${project_path}/ae_scripts/no_cache.sh
+            echo "Ploting Figure 14"
+            python ${project_path}/ae_scripts/python/figure_14.py
+            ;;
+        4)
+            echo "Running exp4"
+            source ${project_path}/ae_scripts/exp3.sh
+            echo "Ploting Figure 9"
+            python ${project_path}/ae_scripts/python/figure_9.py
+            ;;
+        *)
+            echo "Invalid option. Please choose a number between 1 and 4."
+            exit 1
+            ;;
+    esac
+
 fi
 
-source ${project_path}/ae_scripts/plot_all.sh
