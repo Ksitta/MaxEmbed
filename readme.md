@@ -15,10 +15,10 @@ For the first parameter:
 Figures will be saved in the `<log_dir>/figures` folder.
 
 The second parameter can be one of the following:
-- 1 - Run performance.sh and main_evaluation.sh
-- 2 - Run performance.sh and different_algorithm.sh
-- 3 - Run performance.sh and cdf.sh
-- 4 - Run performance.sh and no_cache.sh
+- 1 - Run exp1.sh and draw figure 8, 10, 11, 12 
+- 2 - Run exp2.sh and draw figure 13
+- 3 - Run exp3.sh and draw figure 14
+- 4 - Run exp4.sh and draw figure 9
 If you do not specify the second parameter, the script will run all the experiments.
 
 for example:
