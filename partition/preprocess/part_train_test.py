@@ -40,8 +40,8 @@ def parse_args():
     return args
 
 def write_data(args, vetex, indexes, offsets, results):
-    indexes = indexes.astype(np.int64)
-    offsets = offsets.astype(np.int32)
+    indexes = indexes.astype(np.int32)
+    offsets = offsets.astype(np.int64)
 
     train_len = int(len(results) * args.train_ratio)
 
@@ -51,8 +51,8 @@ def write_data(args, vetex, indexes, offsets, results):
     valid_indexes = indexes[offsets[train_len]:]
     valid_offsets = offsets[train_len:]
 
-    assert indexes.dtype == np.int64
-    assert offsets.dtype == np.int32
+    assert indexes.dtype == np.int32
+    assert offsets.dtype == np.int64
 
     assert len(train_offsets) == train_len + 1
     assert len(valid_offsets) == len(results) - train_len + 1
@@ -63,8 +63,8 @@ def write_data(args, vetex, indexes, offsets, results):
 
     if args.binary_output:
         output_file = open(args.output + ".train", "wb")
-        output_file.write(len(vetex).to_bytes(8, byteorder="little"))
         output_file.write(train_len.to_bytes(8, byteorder="little"))
+        output_file.write(len(vetex).to_bytes(8, byteorder="little"))
         output_file.write(train_offsets.tobytes())
         output_file.write(train_indexes.tobytes())
     else:
@@ -82,8 +82,8 @@ def write_data(args, vetex, indexes, offsets, results):
         valid_offsets -= valid_offsets[0]
         if args.binary_output:
             valid_output_file = open(args.output + ".test", "wb")
-            valid_output_file.write(len(vetex).to_bytes(8, byteorder="little"))
             valid_output_file.write((len(results) - train_len).to_bytes(8, byteorder="little"))
+            valid_output_file.write(len(vetex).to_bytes(8, byteorder="little"))
             valid_output_file.write(valid_offsets.tobytes())
             valid_output_file.write(valid_indexes.tobytes())
         else:
@@ -107,20 +107,6 @@ def preprocess(args, results):
     offsets = np.array(offsets)
     indexes = np.concatenate(results)
     vetex, indexes, counts = np.unique(indexes, return_inverse=True, return_counts=True)
-
-    if args.remove_hot_ratio > 0 or args.remove_cold_cnt > 0:
-        sorted_counts = np.sort(counts)
-        counts_len = len(counts)
-        condition = (counts[indexes] < args.remove_cold_cnt) | (counts[indexes] > sorted_counts[int(counts_len * (1 - args.remove_hot_ratio)) - 1])
-        to_remove = np.nonzero(condition)[0]
-        indexes = indexes[~condition]
-        j = 0
-        if len(to_remove) != 0:
-            for i in range(len(offsets)):
-                while j + 1 < len(to_remove) and to_remove[j + 1] < offsets[i]:
-                    j += 1
-                if to_remove[j] < offsets[i]:
-                    offsets[i] -= j + 1
 
     vetex, indexes = np.unique(indexes, return_inverse=True)
     

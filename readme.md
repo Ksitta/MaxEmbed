@@ -112,6 +112,13 @@ The output file contains 5 parts:
 ...
 ```
 
+### If the partition step is slow
+```bash
+swapoff -a # disable swap
+echo always > /sys/kernel/mm/transparent_hugepage/enabled # enable THP
+# but you need to disable THP when using SPDK
+```
+
 ### Step 2: Replication Procedure
 
 The replication program is located at `build/partition/replication_step`.
