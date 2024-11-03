@@ -1,6 +1,6 @@
 # MaxEmbed
 
-This is the source code of the paper "MaxEmbed: Maximizing SSD bandwidth utilization for huge embedding models serving".
+MaxEmbed is an implementation of the paper "MaxEmbed: Maximizing SSD bandwidth utilization for huge embedding models serving". This documentation explains how to build, configure and use the system.
 
 ## For AE reviewers
 
@@ -34,7 +34,7 @@ We have provided a log in the `ae_scripts/log` folder, which you can use to draw
 
 ## How to Build
 
-Install the dependencies:
+Prerequisites:
 
 - [vcpkg](https://github.com/microsoft/vcpkg)
 - cmake
@@ -49,6 +49,8 @@ cd build
 make -j
 ```
 
+Note: Update SPDK library path in `CMakeLists.txt` before building.
+
 ## How to Use
 
 
@@ -61,10 +63,10 @@ bash
 ./build/partition/partition_step <cnt_per_part> <input_file> <output_file> <binary_graph>
 ```
 
-- `cnt_per_part`: The number of vertices in each partition (i.e., the number of embeddings in each page)
-- `input_file`: The input hypergraph file (i.e., the embedding query logs)
-- `output_file`: The output partition file
-- `binary_graph`: Whether the input hypergraph file is binary or not
+- `cnt_per_part`: Number of embeddings per page
+- `input_file`: Hypergraph file containing embedding query logs
+- `output_file`: Output partition file
+- `binary_graph`: Input format flag (binary/text)
 
 #### Input File Format
 

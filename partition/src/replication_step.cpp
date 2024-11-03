@@ -11,6 +11,8 @@
 #include <sys/stat.h>
 #include <sys/mman.h>
 
+const int SAMPLE_SIZE = 1000000;
+
 template <typename K, typename V>
 using FastMap =
     folly::F14FastMap<K, V, std::hash<K>, std::equal_to<K>,
@@ -181,7 +183,7 @@ int main(int argc, char **argv) {
     adjacent_node_cnt.clear();
     IndexType edge_start = node2edge_idx[node];
     IndexType edge_end = node2edge_idx[node + 1];
-    IndexType step = std::max((edge_end - edge_start) / 10000, (IndexType)1);
+    IndexType step = std::max((edge_end - edge_start) / SAMPLE_SIZE, (IndexType)1);
     for (IndexType j = edge_start; j < edge_end; j += step) {
       IndexType edge_id = node2edge_data[j];
       IndexType node_start = xpins[edge_id];

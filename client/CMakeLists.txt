@@ -19,7 +19,7 @@ pkg_search_module(SPDK REQUIRED IMPORTED_TARGET GLOBAL spdk_nvme spdk_env_dpdk)
 message(STATUS SPDK_LIBRARIES ${SPDK_LIBRARIES})
 message(STATUS SPDK_INCLUDE_DIR ${SPDK_INCLUDE_DIR})
 
-set(SPDK_POS "/home/frw/spdk")
+set(SPDK_POS "/home/frw/spdk") # change this to your SPDK path
 
 set(SPDK_LIB "-L/usr/local/lib -L${SPDK_POS}/build/lib \ 
  -lspdk_nvme -lspdk_sock -lspdk_sock_posix -lspdk_trace \ 
@@ -44,7 +44,7 @@ target_link_libraries(spdk_wrapper PUBLIC Folly::folly)
 target_link_options(spdk_wrapper INTERFACE -Wl,--whole-archive -Wl,--no-as-needed)
 target_link_options(spdk_wrapper INTERFACE ${SPDK_LIB} ${DPDK_LIB})
 target_link_options(spdk_wrapper INTERFACE -Wl,--no-whole-archive)
-target_link_options(spdk_wrapper INTERFACE -lnuma -ldl  -L/home/frw/spdk/isa-l/.libs -lisal -pthread -lrt -luuid -lcrypto -lm -laio -lfuse3)
+target_link_options(spdk_wrapper INTERFACE -lnuma -ldl  -L${SPDK_POS}/isa-l/.libs -lisal -pthread -lrt -luuid -lcrypto -lm -laio -lfuse3)
 
 add_executable(client src/client.cpp)
 target_link_libraries(client mapper)
